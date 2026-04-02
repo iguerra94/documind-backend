@@ -1,0 +1,13 @@
+package com.ivan.documind.documind_backend;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DocumindBackendApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(DocumindBackendApplication.class, args);
+	}
+
+}
