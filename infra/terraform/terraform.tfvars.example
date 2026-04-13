@@ -1,0 +1,9 @@
+aws_region                =
+aws_profile               =
+project_name              =
+container_port            =
+desired_count             =
+image_tag                 =
+bedrock_knowledge_base_id =
+bedrock_model_arn         =
+health_check_path         =

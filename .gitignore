@@ -31,3 +31,26 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform variable files with real values
+*.tfvars
+*.tfvars.json
+
+# Local env files
+.env
+.env.*
+
+# macOS
+.DS_Store
+
