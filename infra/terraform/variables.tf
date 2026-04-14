@@ -33,7 +33,7 @@ variable "bedrock_knowledge_base_id" {
 }
 
 variable "bedrock_model_arn" {
-  description = "ARN del modelo de Bedrock"
+  description = "ARN del foundation model o inference profile soportado por Bedrock Knowledge Bases RetrieveAndGenerate"
   type        = string
 }
 
