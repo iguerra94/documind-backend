@@ -12,6 +12,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: prod
     env:
       TF_INPUT: "false"
       AWS_REGION: ${{ vars.AWS_REGION }}
