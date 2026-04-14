@@ -287,6 +287,7 @@ resource "aws_iam_role_policy" "bedrock_access" {
       {
         Effect = "Allow"
         Action = [
+          "bedrock:GetInferenceProfile",
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream",
           "bedrock:Retrieve",
