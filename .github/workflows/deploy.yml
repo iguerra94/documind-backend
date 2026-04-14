@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-main
+  cancel-in-progress: false
+
 permissions:
   id-token: write
   contents: read
@@ -70,11 +74,11 @@ jobs:
 
       - name: Terraform plan
         working-directory: infra/terraform
-        run: terraform plan -input=false -var="image_tag=${{ github.sha }}"
+        run: terraform plan -input=false -lock-timeout=5m -var="image_tag=${{ github.sha }}"
 
       - name: Terraform apply
         working-directory: infra/terraform
-        run: terraform apply -input=false -auto-approve -var="image_tag=${{ github.sha }}"
+        run: terraform apply -input=false -lock-timeout=5m -auto-approve -var="image_tag=${{ github.sha }}"
 
       - name: Wait for ECS stability
         run: aws ecs wait services-stable --cluster documind-cluster --services documind-service --region "$AWS_REGION"
