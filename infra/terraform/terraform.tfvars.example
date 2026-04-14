@@ -1,5 +1,4 @@
 aws_region                =
-aws_profile               =
 project_name              =
 container_port            =
 desired_count             =
