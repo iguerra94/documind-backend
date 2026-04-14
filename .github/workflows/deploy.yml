@@ -12,10 +12,24 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      TF_INPUT: "false"
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ROLE_TO_ASSUME: ${{ vars.AWS_ROLE_TO_ASSUME }}
+      TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+      TF_VAR_bedrock_knowledge_base_id: ${{ vars.BEDROCK_KNOWLEDGE_BASE_ID }}
+      TF_VAR_bedrock_model_arn: ${{ vars.BEDROCK_MODEL_ARN }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Validate deploy configuration
+        run: |
+          test -n "$AWS_REGION" || { echo "Missing GitHub variable: AWS_REGION"; exit 1; }
+          test -n "$AWS_ROLE_TO_ASSUME" || { echo "Missing GitHub variable: AWS_ROLE_TO_ASSUME"; exit 1; }
+          test -n "$TF_VAR_bedrock_knowledge_base_id" || { echo "Missing GitHub variable: BEDROCK_KNOWLEDGE_BASE_ID"; exit 1; }
+          test -n "$TF_VAR_bedrock_model_arn" || { echo "Missing GitHub variable: BEDROCK_MODEL_ARN"; exit 1; }
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -29,8 +43,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::253490749577:role/github-actions-documind-deploy-role
-          aws-region: us-east-1
+          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@v2
@@ -51,18 +65,18 @@ jobs:
 
       - name: Terraform init
         working-directory: infra/terraform
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Terraform plan
         working-directory: infra/terraform
-        run: terraform plan -var="image_tag=${{ github.sha }}"
+        run: terraform plan -input=false -var="image_tag=${{ github.sha }}"
 
       - name: Terraform apply
         working-directory: infra/terraform
-        run: terraform apply -auto-approve -var="image_tag=${{ github.sha }}"
+        run: terraform apply -input=false -auto-approve -var="image_tag=${{ github.sha }}"
 
       - name: Wait for ECS stability
-        run: aws ecs wait services-stable --cluster documind-cluster --services documind-service --region us-east-1
+        run: aws ecs wait services-stable --cluster documind-cluster --services documind-service --region "$AWS_REGION"
 
       - name: Check readiness endpoint
         run: curl -f http://documind-alb-1947393645.us-east-1.elb.amazonaws.com/actuator/health/readiness
