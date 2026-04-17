@@ -1,6 +1,9 @@
 package com.ivan.documind.documind_backend.shared.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -8,11 +11,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.ivan.documind.documind_backend.shared.observability.ObservabilityLogValues;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiErrorResponse> handleValidationException(
@@ -32,6 +38,8 @@ public class GlobalExceptionHandler {
         request.getRequestURI(),
         details);
 
+    logRequestFailure(request, HttpStatus.BAD_REQUEST, exception, "Validation failed");
+
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
@@ -46,6 +54,8 @@ public class GlobalExceptionHandler {
         "Malformed JSON request",
         request.getRequestURI(),
         List.of(exception.getMostSpecificCause().getMessage()));
+
+    logRequestFailure(request, HttpStatus.BAD_REQUEST, exception, "Malformed JSON request");
 
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
@@ -62,6 +72,8 @@ public class GlobalExceptionHandler {
         request.getRequestURI(),
         List.of());
 
+    logRequestFailure(request, HttpStatus.BAD_REQUEST, exception, exception.getMessage());
+
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
@@ -77,6 +89,23 @@ public class GlobalExceptionHandler {
         request.getRequestURI(),
         List.of(exception.getMessage()));
 
+    logRequestFailure(request, HttpStatus.INTERNAL_SERVER_ERROR, exception, "An unexpected error occurred");
+
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+  }
+
+  private void logRequestFailure(
+      HttpServletRequest request,
+      HttpStatus status,
+      Exception exception,
+      String message) {
+    logger.warn(
+        "event=request_failed requestId={} method={} path={} status={} exceptionType={} exceptionMessage={}",
+        ObservabilityLogValues.requestId(request),
+        request.getMethod(),
+        request.getRequestURI(),
+        status.value(),
+        exception.getClass().getSimpleName(),
+        ObservabilityLogValues.sanitizeMessage(message));
   }
 }

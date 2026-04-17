@@ -76,12 +76,6 @@ public class RequestCompletionLoggingFilter extends OncePerRequestFilter {
   }
 
   private String resolveRequestId(HttpServletRequest request) {
-    Object requestId = request.getAttribute(RequestId.ATTRIBUTE_NAME);
-
-    if (requestId instanceof String value && RequestId.isValid(value)) {
-      return value;
-    }
-
-    return "unknown";
+    return ObservabilityLogValues.requestId(request);
   }
 }
