@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - "demo-docs/**"
+      - "README.md"
+      - "HELP.md"
 
 concurrency:
   group: deploy-main
