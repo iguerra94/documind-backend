@@ -35,36 +35,40 @@ No se encontro base de datos configurada en el codigo actual.
 
 ```text
 .
-+-- src
-|   +-- main
-|   |   +-- java/com/ivan/documind/documind_backend
-|   |   |   +-- DocumindBackendApplication.java
-|   |   |   +-- api
-|   |   |   |   +-- controller
-|   |   |   |   +-- dto
-|   |   |   +-- application
-|   |   |   |   +-- port
-|   |   |   |   +-- usecase
-|   |   |   +-- domain
-|   |   |   |   +-- model
-|   |   |   +-- infrastructure
-|   |   |   |   +-- adapter
-|   |   |   |   +-- config
-|   |   |   +-- shared
-|   |   |       +-- exception
-|   |   |       +-- observability
-|   |   +-- resources
-|   |       +-- application.properties
-|   +-- test
-|       +-- java/com/ivan/documind/documind_backend
-+-- demo-docs
-+-- docs
-+-- infra/terraform
-+-- .github/workflows/deploy.yml
-+-- Dockerfile
-+-- pom.xml
-+-- mvnw
-+-- mvnw.cmd
+├── src
+│   ├── main
+│   │   ├── java/com/ivan/documind/documind_backend
+│   │   │   ├── DocumindBackendApplication.java
+│   │   │   ├── api
+│   │   │   │   ├── controller
+│   │   │   │   └── dto
+│   │   │   │       ├── request
+│   │   │   │       └── response
+│   │   │   ├── application
+│   │   │   │   ├── port
+│   │   │   │   └── usecase
+│   │   │   ├── domain
+│   │   │   │   └── model
+│   │   │   ├── infrastructure
+│   │   │   │   ├── adapter
+│   │   │   │   │   ├── bedrock
+│   │   │   │   │   └── mock
+│   │   │   │   └── config
+│   │   │   └── shared
+│   │   │       ├── exception
+│   │   │       └── observability
+│   │   └── resources
+│   │       └── application.properties
+│   └── test
+│       └── java/com/ivan/documind/documind_backend
+├── demo-docs
+├── docs
+├── infra/terraform
+├── .github/workflows/deploy.yml
+├── Dockerfile
+├── pom.xml
+├── mvnw
+└── mvnw.cmd
 ```
 
 Directorios principales:
