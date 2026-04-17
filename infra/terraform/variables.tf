@@ -18,7 +18,7 @@ variable "container_port" {
 variable "desired_count" {
   description = "Cantidad deseada de tasks ECS"
   type        = number
-  default     = 1
+  default     = 0
 }
 
 variable "image_tag" {
